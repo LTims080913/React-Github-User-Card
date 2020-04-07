@@ -1,26 +1,57 @@
 import React from 'react';
-import logo from './logo.svg';
+import axios from 'axios';
 import './App.css';
+import Follower from './Follower'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+class App extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      user: "",
+      codeName: "",
+      location: "",
+      followers: "",
+      following: "",
+      avatar_url: ""
+     
+
+    }
+  }
+
+componentDidMount(){
+  axios.get("https://api.github.com/users/LTims080913")
+  .then(res => {
+    console.log(res)
+    this.setState({
+      user: res.data.name,
+      codeName: res.data.login,
+      location: res.data.location,
+      followers: res.data.followers,
+      following: res.data.following,
+      avatar_url: res.data.avatar_url
+    })
+    
+  })
+
 }
 
-export default App;
+render(){
+  return(
+    <>
+    <div>
+      <h1>Welcome Git User, {this.state.user}</h1>
+      <img src={this.state.avatar_url}/>
+      <p>Code Name: {this.state.codeName}</p>
+      <p>Location: {this.state.location}</p>
+      <p>Current Followers: {this.state.followers} </p>
+      <p>Currently Following: {this.state.following}</p>
+    </div>
+      <Follower/>
+    </>
+  )
+}
+
+
+}
+export default App
