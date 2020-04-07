@@ -8,12 +8,13 @@ class App extends React.Component {
   constructor() {
     super();
     this.state = {
-      user: "",
-      codeName: "",
-      location: "",
-      followers: "",
-      following: "",
-      avatar_url: ""
+      user: {},
+      person: []
+      // codeName: "",
+      // location: "",
+      // followers: "",
+      // following: "",
+      // avatar_url: ""
      
 
     }
@@ -24,30 +25,42 @@ componentDidMount(){
   .then(res => {
     console.log(res)
     this.setState({
-      user: res.data.name,
-      codeName: res.data.login,
-      location: res.data.location,
-      followers: res.data.followers,
-      following: res.data.following,
-      avatar_url: res.data.avatar_url
+      user: res.data
+      // codeName: res.data.login,
+      // location: res.data.location,
+      // followers: res.data.followers,
+      // following: res.data.following,
+      // avatar_url: res.data.avatar_url
     })
     
   })
-
+  .catch(error => {
+    console.log("Houston we have a problem", error)
+  })
+  axios.get("https://api.github.com/users/LTims080913/followers")
+  .then(response => {
+    console.log(response)
+    this.setState({
+      person: response.data
+    })
+  })
+  .catch(error => {
+    console.log("Houston we have a problem", error)
+  })
 }
 
 render(){
   return(
     <>
     <div>
-      <h1>Welcome Git User, {this.state.user}</h1>
-      <img src={this.state.avatar_url}/>
-      <p>Code Name: {this.state.codeName}</p>
-      <p>Location: {this.state.location}</p>
-      <p>Current Followers: {this.state.followers} </p>
-      <p>Currently Following: {this.state.following}</p>
+      <h1>Welcome Git User, {this.state.user.name}</h1>
+      <img src={this.state.user.avatar_url}/>
+      <p>Code Name: {this.state.user.login}</p>
+      <p>Location: {this.state.user.location}</p>
+      <p>Current Followers: {this.state.user.followers} </p>
+      <p>Currently Following: {this.state.user.following}</p>
     </div>
-      <Follower/>
+      <Follower person={this.state.person}/>
     </>
   )
 }
